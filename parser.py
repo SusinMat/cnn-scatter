@@ -68,10 +68,15 @@ if __name__ == "__main__":
     colors = ["darkred", "darkgreen", "darkblue", "brown"]
     plt.xlabel("Energy gain (J)")
     plt.ylabel("Top 1 accuracy drop (p.p.)")
+    right = 1.0
+    top = 1.0
     for (cnn, marker, color) in zip(lines.keys(), markers, colors):
-        print(x[cnn])
-        print(y[cnn])
         ax = fig.add_subplot()
-        ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.2, s=20)
+        ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.2, s=20, zorder=2.0)
+        right = max(right, max(x[cnn]))
+        top = max(top, max(y[cnn]))
+        ax.set_xlim(left=0.0, right=right + 0.1)
+        ax.set_ylim(bottom=0.0, top=top + 0.1)
     fig.legend()
+    plt.grid(linestyle="dashed", zorder=1.0)
     plt.show()
