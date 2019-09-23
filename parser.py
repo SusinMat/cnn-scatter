@@ -65,11 +65,13 @@ if __name__ == "__main__":
 
     fig = plt.figure()
     markers = ["o", "^", "+", "s"]
+    colors = ["darkred", "darkgreen", "darkblue", "brown"]
     plt.xlabel("Energy gain (J)")
-    plt.ylabel("Accuracy drop (p.p.)")
-    for (cnn, marker) in zip(lines.keys(), markers):
+    plt.ylabel("Top 1 accuracy drop (p.p.)")
+    for (cnn, marker, color) in zip(lines.keys(), markers, colors):
         print(x[cnn])
         print(y[cnn])
         ax = fig.add_subplot()
-        ax.scatter(x[cnn], y[cnn], color='darkblue', marker=marker, linewidths=0.2, s=20)
+        ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.2, s=20)
+    fig.legend()
     plt.show()
