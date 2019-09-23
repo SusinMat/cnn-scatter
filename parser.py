@@ -34,10 +34,10 @@ def parse_accuracy(lines):
             continue
         accuracy_line = [line.strip() for line in lines[i].split("&")]
         accuracy_layers = [int(layer) for layer in accuracy_line[0].split(",")]
-        new_accuracy = Approximation(conv_layers=accuracy_layers, top1=float(accuracy_line[1]), top5=float(accuracy_line[2]), time_delta=float(accuracy_line[3]), energy_delta=float(accuracy_line[4][:-11]))
+        new_accuracy = Approximation(conv_layers=accuracy_layers, top1=float(accuracy_line[1]), top5=float(accuracy_line[2]), time_delta=float(accuracy_line[3]), energy_delta=float(accuracy_line[4][:-9]))
         accuracy_results.append(new_accuracy)
         i += 1
-    return [baseline_top1, baseline_top5, accuracy_results]
+    return (baseline_top1, baseline_top5, accuracy_results)
 
 if __name__ == "__main__":
     lines = {}
@@ -61,6 +61,15 @@ if __name__ == "__main__":
         y[cnn] = []
         for result in accuracy_results[cnn]:
             x[cnn].append(result.energy_delta)
-            y[cnn].append(baseline_top1[cnn] - result.energy_delta)
-        
-    exit()
+            y[cnn].append(baseline_top1[cnn] - result.top1)
+
+    fig = plt.figure()
+    markers = ["o", "^", "+", "s"]
+    plt.xlabel("Energy gain (J)")
+    plt.ylabel("Accuracy drop (p.p.)")
+    for (cnn, marker) in zip(lines.keys(), markers):
+        print(x[cnn])
+        print(y[cnn])
+        ax = fig.add_subplot()
+        ax.scatter(x[cnn], y[cnn], color='darkblue', marker=marker, linewidths=0.2, s=20)
+    plt.show()
