@@ -64,15 +64,15 @@ if __name__ == "__main__":
             y[cnn].append(baseline_top1[cnn] - result.top1)
 
     fig = plt.figure()
-    markers = ["o", "^", "+", "s"]
-    colors = ["darkred", "darkgreen", "darkblue", "brown"]
+    markers = ["x", "^", "+", "s"]
+    colors = ["darkred", "darkgreen", "darkblue", "darkgoldenrod"]
     plt.xlabel("Energy gain (J)")
     plt.ylabel("Top 1 accuracy drop (p.p.)")
     right = 1.0
     top = 1.0
     for (cnn, marker, color) in zip(lines.keys(), markers, colors):
         ax = fig.add_subplot()
-        ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.2, s=20, zorder=2.0)
+        ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.1, s=40, zorder=2.0)
         right = max(right, max(x[cnn]))
         top = max(top, max(y[cnn]))
         ax.set_xlim(left=0.0, right=right + 0.1)
