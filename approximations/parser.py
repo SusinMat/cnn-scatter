@@ -40,23 +40,21 @@ def parse_accuracy(lines):
     return (baseline_top1, baseline_top5, accuracy_results)
 
 if __name__ == "__main__":
+    cnns = ["inception_v3", "inception_v4", "inception_resnet_v2", "resnet_v2"]
     lines = {}
     accuracy_results = {}
     baseline_top1 = {}
     baseline_top5 = {}
-    lines["inception_v3"]        = [line.strip() for line in open("inception_v3.tex", "r")]
-    lines["inception_v4"]        = [line.strip() for line in open("inception_v4.tex", "r")]
-    lines["inception_resnet_v2"] = [line.strip() for line in open("inception_resnet_v2.tex", "r")]
-    lines["resnet_v2"]           = [line.strip() for line in open("resnet_v2.tex", "r")]
 
 
-    for cnn in lines.keys():
-        (baseline_top1[cnn], baseline_top5[cnn], accuracy_results[cnn]) = parse_accuracy(lines[cnn])
+    for cnn in cnns:
+        lines = [line.strip() for line in open(cnn + ".tex", "r")]
+        (baseline_top1[cnn], baseline_top5[cnn], accuracy_results[cnn]) = parse_accuracy(lines)
 
     x = {}
     y = {}
 
-    for cnn in lines.keys():
+    for cnn in cnns:
         x[cnn] = []
         y[cnn] = []
         for result in accuracy_results[cnn]:
@@ -70,8 +68,8 @@ if __name__ == "__main__":
     plt.ylabel("Top 1 accuracy drop (p.p.)")
     right = 1.0
     top = 1.0
-    for (cnn, marker, color) in zip(lines.keys(), markers, colors):
-        ax = fig.add_subplot()
+    ax = fig.add_subplot()
+    for (cnn, marker, color) in zip(cnns, markers, colors):
         ax.scatter(x[cnn], y[cnn], color=color, label=cnn, marker=marker, linewidths=0.1, s=40, zorder=2.0)
         right = max(right, max(x[cnn]))
         top = max(top, max(y[cnn]))
