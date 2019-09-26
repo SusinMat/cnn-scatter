@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import matplotlib.pyplot as plt
+import numpy as np
 
 class Layer:
     index = None
@@ -51,15 +52,14 @@ if __name__ == "__main__":
     performance_results = {}
     max_performance_results = {}
 
-
     for cnn in cnns:
         performance_lines     = [line.strip() for line in open(cnn + "-performance.tex", "r")]
         max_performance_lines = [line.strip() for line in open(cnn + "-max-performance.tex", "r")]
         (performance_results[cnn], max_performance_results[cnn]) = parse_layers(performance_lines, max_performance_lines)
 
-
     for cnn in cnns:
         fig = plt.figure()
+        marker_size = 60
         performance_marker = "o"
         performance_color = "darkcyan"
         max_performance_marker = "x"
@@ -67,12 +67,20 @@ if __name__ == "__main__":
         plt.xlabel("Original energy (J)")
         plt.ylabel("Approximate (J)")
         ax = fig.add_subplot()
-        x = [layer.orig_energy for layer in performance_results[cnn]]
-        y = [layer.approx_energy for layer in performance_results[cnn]]
-        ax.scatter(x, y, color=performance_color, label="Current implementation", marker=performance_marker, linewidths=0.1, s=40, zorder=2.0)
-        x = [layer.orig_energy for layer in max_performance_results[cnn]]
-        y = [layer.approx_energy for layer in max_performance_results[cnn]]
-        ax.scatter(x, y, color=max_performance_color, label="Upper bound", marker=max_performance_marker, linewidths=0.1, s=40, zorder=2.0)
+        ax.set_aspect("equal")
+        performance_x = [layer.orig_energy for layer in performance_results[cnn]]
+        performance_y = [layer.approx_energy for layer in performance_results[cnn]]
+        max_performance_x = [layer.orig_energy for layer in max_performance_results[cnn]]
+        max_performance_y = [layer.approx_energy for layer in max_performance_results[cnn]]
+        ax.scatter(performance_x, performance_y, color=performance_color, label="Current implementation", marker=performance_marker, linewidths=0.1, s=marker_size, zorder=2.0)
+        ax.scatter(max_performance_x, max_performance_y, color=max_performance_color, label="Upper bound", marker=max_performance_marker, linewidths=0.1, s=marker_size, zorder=2.0)
+        x_lim = max(performance_x + performance_y + max_performance_x + max_performance_y) + 0.125
+        x = np.linspace(0.0, x_lim)
+        y = x
+        plt.plot(x, y, '-', color="gray", linewidth=0.2)
         fig.legend()
         plt.grid(linestyle="dashed", zorder=1.0)
+        plt.xlim(0.0, x_lim)
+        plt.ylim(0.0, x_lim)
+        print(cnn)
         plt.show()
