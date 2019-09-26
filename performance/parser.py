@@ -67,20 +67,23 @@ if __name__ == "__main__":
         plt.xlabel("Original energy (J)")
         plt.ylabel("Approximate (J)")
         ax = fig.add_subplot()
-        ax.set_aspect("equal")
         performance_x = [layer.orig_energy for layer in performance_results[cnn]]
         performance_y = [layer.approx_energy for layer in performance_results[cnn]]
         max_performance_x = [layer.orig_energy for layer in max_performance_results[cnn]]
         max_performance_y = [layer.approx_energy for layer in max_performance_results[cnn]]
         ax.scatter(performance_x, performance_y, color=performance_color, label="Current implementation", marker=performance_marker, linewidths=0.1, s=marker_size, zorder=2.0)
         ax.scatter(max_performance_x, max_performance_y, color=max_performance_color, label="Upper bound", marker=max_performance_marker, linewidths=0.1, s=marker_size, zorder=2.0)
-        x_lim = max(performance_x + performance_y + max_performance_x + max_performance_y) + 0.125
-        x = np.linspace(0.0, x_lim)
+        lim = max(performance_x + performance_y + max_performance_x + max_performance_y)
+        x = np.linspace(0.0, lim * 4)
         y = x
         plt.plot(x, y, '-', color="gray", linewidth=0.2)
         fig.legend()
         plt.grid(linestyle="dashed", zorder=1.0)
-        plt.xlim(0.0, x_lim)
-        plt.ylim(0.0, x_lim)
+        plt.xlim(left=0.0, right=lim + 0.01 * lim)
+        plt.ylim(bottom=0.0, top=lim + 0.01 * lim)
+        plt.gca().set_aspect('equal', adjustable='box')
+        tick_step = 0.2 if lim >= 1.0 else 0.1 if lim >= 0.5 else 0.05
+        plt.xticks(np.arange(0.0, lim, step=tick_step))
+        plt.yticks(np.arange(0.0, lim, step=tick_step))
         print(cnn)
         plt.show()
